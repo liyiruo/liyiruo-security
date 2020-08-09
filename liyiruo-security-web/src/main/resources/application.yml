@@ -3,3 +3,11 @@ server:
 spring:
   thymeleaf:
     cache: false
+
+
+#  security:
+#    user:
+#      name: admin
+#      password: 123
+#      roles: admin
+

@@ -73,19 +73,18 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/login/page")
                 .permitAll()
                 .anyRequest()
-                .authenticated();//所有进入应用的http请求都要进行认证
+                .authenticated()//所有进入应用的http请求都要进行认证
+                .and().csrf().disable() //关闭 CSRF 攻击
+        ;
     }
 
 
     /**
      * 释放静态资源
-     *
      * @param web
      */
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/dist/**", "/modules/**", "/plugins/**");
     }
-
-
 }

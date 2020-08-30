@@ -15,7 +15,7 @@ spring:
 
 liyiruo:
   security:
-    authentication:
+    authention:
       loginPage: /login/page #登录页面
       loginProcessingUrl: /login/form #登录表单提交URL
       usernameParameter: name #登录表单的用户名属性
@@ -24,3 +24,4 @@ liyiruo:
         - /dist/**
         - /modules/**
         - /plugins/**
+      loginType: JSON  # 认证之后 响应的类型:JSON/REDIRECT

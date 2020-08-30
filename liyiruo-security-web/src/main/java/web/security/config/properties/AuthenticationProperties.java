@@ -10,6 +10,15 @@ public class AuthenticationProperties {
     private String usernameParameter = "name";
     private String passwordParameter = "pwd";
     private String[] staticPaths = {"/dist/**", "/modules/**", "/plugins/**"};
+    private LoginResponseType loginType = LoginResponseType.REDIRECT;
+
+    public LoginResponseType getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(LoginResponseType loginType) {
+        this.loginType = loginType;
+    }
 
     public String getLoginPage() {
         return loginPage;

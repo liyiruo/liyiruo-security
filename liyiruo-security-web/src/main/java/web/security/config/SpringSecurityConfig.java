@@ -1,6 +1,7 @@
 package web.security.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,12 +11,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import web.security.config.properties.SecurityProperties;
 
 @EnableWebSecurity
 @Configuration
 @Slf4j
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
-
+    @Autowired
+    SecurityProperties securityProperties;
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -46,7 +49,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      * 2、资源所对应的角色权限
      * 3、定义认证方式:httpBasic 、httpForm
      * 4、定制登录页面、登录请求地址、错误处理方式
-     * * 5、自定义 spring security 过滤器
+     * 5、自定义 spring security 过滤器
      *
      * @param http
      * @throws Exception
@@ -64,13 +67,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 //        http.httpBasic()
         //formLogin 表单认证
         http.formLogin()
-                .loginPage("/login/page")//指定登录页面 URL 需要在controller里
-                .loginProcessingUrl("/login/form")//认证成功后进入的页面 默认是/login
-                .usernameParameter("name")// 默认用户名的属性名是 username
-                .passwordParameter("pwd")// 默认密码的属性名是 password
+                .loginPage(securityProperties.getAuthention().getLoginPage())//指定登录页面 URL 需要在controller里
+                .loginProcessingUrl(securityProperties.getAuthention().getLoginProcessingUrl())//认证成功后进入的页面 默认是/login
+                .usernameParameter(securityProperties.getAuthention().getUsernameParameter())// 默认用户名的属性名是 username
+                .passwordParameter(securityProperties.getAuthention().getPasswordParameter())// 默认密码的属性名是 password
                 .and()
                 .authorizeRequests()//认证请求
-                .antMatchers("/login/page")
+                .antMatchers(securityProperties.getAuthention().getLoginPage())
                 .permitAll()
                 .anyRequest()
                 .authenticated()//所有进入应用的http请求都要进行认证
@@ -81,10 +84,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 释放静态资源
+     *
      * @param web
      */
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/dist/**", "/modules/**", "/plugins/**");
+        web.ignoring().antMatchers(securityProperties.getAuthention().getStaticPaths());
     }
 }

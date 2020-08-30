@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import web.security.config.properties.SecurityProperties;
 
 @EnableWebSecurity
@@ -33,7 +35,16 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Autowired
     private UserDetailsService customUserDetailsService;
-
+    /**
+     *注入认证成功后的处理器
+     */
+    @Autowired
+    private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    /**
+     *注入认证失败后的处理器
+     */
+    @Autowired
+    private AuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -95,6 +106,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginProcessingUrl(securityProperties.getAuthention().getLoginProcessingUrl())//认证成功后进入的页面 默认是/login
                 .usernameParameter(securityProperties.getAuthention().getUsernameParameter())// 默认用户名的属性名是 username
                 .passwordParameter(securityProperties.getAuthention().getPasswordParameter())// 默认密码的属性名是 password
+
+                .successHandler(customAuthenticationSuccessHandler)//认证成功后的处理器
+                .failureHandler(customAuthenticationFailureHandler)//认证失败后的处理器
+
                 .and()
                 .authorizeRequests()//认证请求
                 .antMatchers(securityProperties.getAuthention().getLoginPage())

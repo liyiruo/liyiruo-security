@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import web.security.config.properties.SecurityProperties;
@@ -17,8 +18,23 @@ import web.security.config.properties.SecurityProperties;
 @Configuration
 @Slf4j
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+    /**
+     * 注入的这个securityProperties，
+     * 是将原本写死的数据配置信息，写在application.yml配置文件里。
+     */
     @Autowired
-    SecurityProperties securityProperties;
+    private SecurityProperties securityProperties;
+
+    /**
+     * 之前登录信息是写死在内存中的，注入这个类，
+     * 返回的是从数据库查询到的信息
+     *
+     * @return
+     */
+    @Autowired
+    private UserDetailsService customUserDetailsService;
+
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -34,6 +50,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+
+        //采用内存存储的方式
+        /*
         String password = passwordEncoder().encode("123");
         log.info("加密后的密码=====>{}", password);
         auth
@@ -41,6 +60,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withUser("admin")
                 .password(password)
                 .authorities("admin");
+        */
+
+        //采用数据库方式
+        auth.userDetailsService(customUserDetailsService);
+
     }
 
     /**

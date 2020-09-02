@@ -13,6 +13,11 @@
     <artifactId>liyiruo-security-web</artifactId>
 
     <dependencies>
+        <!--短信验证码-->
+        <dependency>
+            <groupId>com.github.penggle</groupId>
+            <artifactId>kaptcha</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>

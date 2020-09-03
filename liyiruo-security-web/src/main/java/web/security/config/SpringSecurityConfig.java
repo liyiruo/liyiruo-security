@@ -122,7 +122,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()//认证请求
-                .antMatchers(securityProperties.getAuthention().getLoginPage(), "/code/image")
+                .antMatchers(securityProperties.getAuthention().getLoginPage(), "/code/image","/code/image","/mobile/page")
                 .permitAll()
                 .anyRequest()
                 .authenticated()//所有进入应用的http请求都要进行认证

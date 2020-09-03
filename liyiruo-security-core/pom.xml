@@ -13,6 +13,11 @@
     <artifactId>liyiruo-security-core</artifactId>
 
     <dependencies>
+        <!--短信验证码-->
+        <dependency>
+            <groupId>com.github.penggle</groupId>
+            <artifactId>kaptcha</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.liyiruo</groupId>
             <artifactId>liyiruo-security-base</artifactId>

@@ -14,12 +14,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import web.security.authentication.code.ImageCodeValidateFilter;
 import web.security.config.properties.SecurityProperties;
 
 @EnableWebSecurity
 @Configuration
 @Slf4j
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    ImageCodeValidateFilter imageCodeValidateFilter;
     /**
      * 注入的这个securityProperties，
      * 是将原本写死的数据配置信息，写在application.yml配置文件里。
@@ -36,12 +40,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService customUserDetailsService;
     /**
-     *注入认证成功后的处理器
+     * 注入认证成功后的处理器
      */
     @Autowired
     private AuthenticationSuccessHandler customAuthenticationSuccessHandler;
     /**
-     *注入认证失败后的处理器
+     * 注入认证失败后的处理器
      */
     @Autowired
     private AuthenticationFailureHandler customAuthenticationFailureHandler;
@@ -101,7 +105,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         //httpBasic 浏览器弹出一个认证框的方式认证
 //        http.httpBasic()
         //formLogin 表单认证
-        http.formLogin()
+        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class)
+                .formLogin()
                 .loginPage(securityProperties.getAuthention().getLoginPage())//指定登录页面 URL 需要在controller里
                 .loginProcessingUrl(securityProperties.getAuthention().getLoginProcessingUrl())//认证成功后进入的页面 默认是/login
                 .usernameParameter(securityProperties.getAuthention().getUsernameParameter())// 默认用户名的属性名是 username
@@ -112,7 +117,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()//认证请求
-                .antMatchers(securityProperties.getAuthention().getLoginPage(),"/code/image")
+                .antMatchers(securityProperties.getAuthention().getLoginPage(), "/code/image")
                 .permitAll()
                 .anyRequest()
                 .authenticated()//所有进入应用的http请求都要进行认证

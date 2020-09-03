@@ -16,7 +16,7 @@ import java.io.IOException;
 @Controller
 @Slf4j
 public class CustomLoginController {
-    private static final String SESSION_KEY = "SESSION_KEY_IMAGE_CODE";
+    public static final String SESSION_KEY = "SESSION_KEY_IMAGE_CODE";
     /**
      * 前往认证界面
      * @return

@@ -1,10 +1,12 @@
 package web.security.authentication.code;
 
+import org.springframework.security.core.AuthenticationException;
+
 /**
  * 异常处理类
  * @author liyiruo
  */
-public class ValidateCodeException extends Throwable {
+public class ValidateCodeException extends AuthenticationException {
     public ValidateCodeException(String msg,Throwable t) {
         super(msg,t);
     }

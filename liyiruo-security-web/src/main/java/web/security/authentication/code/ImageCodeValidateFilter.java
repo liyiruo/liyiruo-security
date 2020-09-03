@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import web.security.config.authentication.CustomAuthenticationFailureHandler;
@@ -38,7 +39,9 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
             try {
                 validate(request);
             } catch (ValidateCodeException e) {
-                e.printStackTrace();
+              //验证码异常回显一直有问题，问题是在这里吗？
+                customAuthenticationFailureHandler.onAuthenticationFailure(request, response, e);
+                return;
             }
         }
         //放行请求
@@ -46,7 +49,7 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
 
     }
 
-    private void validate(HttpServletRequest request) throws ValidateCodeException {
+    private void validate(HttpServletRequest request) throws AuthenticationException {
         //获取session存的验证码
         String sessionCode = (String) request.getSession().getAttribute(CustomLoginController.SESSION_KEY);
         String inputCode = request.getParameter("code");

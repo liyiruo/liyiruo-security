@@ -24,4 +24,4 @@ liyiruo:
         - /dist/**
         - /modules/**
         - /plugins/**
-      loginType: JSON  # 认证之后 响应的类型:JSON/REDIRECT
+      loginType: REDIRECT  # 认证之后 响应的类型:JSON/REDIRECT

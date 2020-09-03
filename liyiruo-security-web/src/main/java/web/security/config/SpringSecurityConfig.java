@@ -15,22 +15,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import web.security.authentication.code.ImageCodeValidateFilter;
 import web.security.config.properties.SecurityProperties;
+
+import javax.sql.DataSource;
 
 @EnableWebSecurity
 @Configuration
 @Slf4j
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+    //记住我功能
     @Autowired
-    ImageCodeValidateFilter imageCodeValidateFilter;
+    private DataSource dataSource;
+    @Autowired
+    private ImageCodeValidateFilter imageCodeValidateFilter;
     /**
      * 注入的这个securityProperties，
      * 是将原本写死的数据配置信息，写在application.yml配置文件里。
      */
     @Autowired
     private SecurityProperties securityProperties;
-
     /**
      * 之前登录信息是写死在内存中的，注入这个类，
      * 返回的是从数据库查询到的信息
@@ -122,6 +127,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()//所有进入应用的http请求都要进行认证
                 .and().csrf().disable() //关闭 CSRF 攻击
+
+                //增加记住我功能
+                .rememberMe()
+                .tokenRepository(jdbcTokenRepository())
+                .tokenValiditySeconds(7 * 24 * 60 * 60)
         ;
     }
 
@@ -134,5 +144,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers(securityProperties.getAuthention().getStaticPaths());
+    }
+
+    @Bean
+    public JdbcTokenRepositoryImpl jdbcTokenRepository() {
+        JdbcTokenRepositoryImpl jdbcTokenRepository = new JdbcTokenRepositoryImpl();
+        jdbcTokenRepository.setDataSource(dataSource);
+        //是否创建表 第一次设置为true
+        //jdbcTokenRepository.setCreateTableOnStartup(true);
+        return jdbcTokenRepository;
     }
 }

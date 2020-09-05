@@ -1,6 +1,7 @@
 package web.security.controller;
 
 import com.liyiruo.base.result.LiyiruoResult;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * @author liyiruo
  */
+@Slf4j
 @Controller
 public class MobileLoginController {
-    private static final String SESSION_KEY = "SESSION_KEY_MOBILE_CODE";
+    public static final String SESSION_KEY = "SESSION_KEY_MOBILE_CODE";
     //进入手机登录页面
     @RequestMapping("/mobile/page")
     public String toMobilePage() {
@@ -32,6 +34,7 @@ public class MobileLoginController {
     @RequestMapping("code/mobile")
     public LiyiruoResult smsCode(HttpServletRequest request) {
         String code = RandomStringUtils.randomNumeric(4);
+        log.info("code===>{}",code);
         request.getSession().setAttribute(SESSION_KEY, code);
         String mobile = request.getParameter("mobile");
         smsSend.sendSms(mobile, code);

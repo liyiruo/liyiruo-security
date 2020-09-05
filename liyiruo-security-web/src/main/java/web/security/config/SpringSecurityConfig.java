@@ -17,6 +17,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import web.security.authentication.code.ImageCodeValidateFilter;
+import web.security.authentication.mobile.MobileAuthenticationConfig;
+import web.security.authentication.mobile.MobileValidateFilter;
 import web.security.config.properties.SecurityProperties;
 
 import javax.sql.DataSource;
@@ -25,6 +27,10 @@ import javax.sql.DataSource;
 @Configuration
 @Slf4j
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    MobileValidateFilter mobileValidateFilter;
+    @Autowired
+    MobileAuthenticationConfig mobileAuthenticationConfig;
     //记住我功能
     @Autowired
     private DataSource dataSource;
@@ -106,11 +112,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
          * 设置页面的上用户名和密码 name 属性  usernameParameter  passwordParameter
          * 设置登录后的进入的页面 loginProcessingUrl
          */
-
         //httpBasic 浏览器弹出一个认证框的方式认证
-//        http.httpBasic()
+        //http.httpBasic()
         //formLogin 表单认证
-        http.addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(mobileValidateFilter,UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
                 .loginPage(securityProperties.getAuthention().getLoginPage())//指定登录页面 URL 需要在controller里
                 .loginProcessingUrl(securityProperties.getAuthention().getLoginProcessingUrl())//认证成功后进入的页面 默认是/login
@@ -122,7 +128,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()//认证请求
-                .antMatchers(securityProperties.getAuthention().getLoginPage(), "/code/image","/code/image","/mobile/page")
+                .antMatchers(securityProperties.getAuthention().getLoginPage(), "/code/image","/mobile/page","/code/mobile")
                 .permitAll()
                 .anyRequest()
                 .authenticated()//所有进入应用的http请求都要进行认证
@@ -133,6 +139,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .tokenRepository(jdbcTokenRepository())
                 .tokenValiditySeconds(7 * 24 * 60 * 60)
         ;
+
+        // 将手机相关的配置绑定过滤器链上
+        http.apply(mobileAuthenticationConfig);
     }
 
 
@@ -154,4 +163,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         //jdbcTokenRepository.setCreateTableOnStartup(true);
         return jdbcTokenRepository;
     }
+
+
 }

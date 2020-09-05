@@ -115,7 +115,10 @@
             return;
         }
         var url = $(this).attr("code_url") + mobile;
+        console.info("url=====>",url)
+        console.info("mobile=====>",mobile)
         $.get(url, function(data){
+          console.info("data====>{}",data)
             alert(data.code === 200 ? "发送成功": "发送失败");
         });
     });

@@ -54,6 +54,7 @@ public class MobileAuthenticationFilter extends AbstractAuthenticationProcessing
         return this.getAuthenticationManager().authenticate(authRequest);
     }
 
+    //此处的注解 解决了AuthenticationManager 未找到的错误
     @Autowired
     @Override
     public void setAuthenticationManager(AuthenticationManager authenticationManager) {

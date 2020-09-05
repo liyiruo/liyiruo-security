@@ -1,5 +1,6 @@
 package web.security.authentication.mobile;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.AuthenticationException;
@@ -20,6 +21,7 @@ import java.io.IOException;
  * @author liyiruo
  */
 @Component
+@Slf4j
 public class MobileValidateFilter extends OncePerRequestFilter {
     @Autowired
     private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
@@ -29,6 +31,8 @@ public class MobileValidateFilter extends OncePerRequestFilter {
                                     HttpServletResponse httpServletResponse,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+
+        log.info("httpServletRequest.getRequestURI()=>{}",httpServletRequest.getRequestURI());
         //什么情况下去校验手机验证码
         if ("/mobile/form".equals(httpServletRequest.getRequestURI())
                 && "post".equalsIgnoreCase(httpServletRequest.getMethod())) {
@@ -36,6 +40,8 @@ public class MobileValidateFilter extends OncePerRequestFilter {
                 validate(httpServletRequest);
             } catch (AuthenticationException e) {
                 customAuthenticationFailureHandler.onAuthenticationFailure(httpServletRequest, httpServletResponse, e);
+                //一定要返回
+                return;
             }
         }
         //非手机验证码登录，则直接放行
@@ -51,7 +57,7 @@ public class MobileValidateFilter extends OncePerRequestFilter {
         if (StringUtils.isBlank(inputCode)) {
             throw new ValidateCodeException("验证码不能为空");
         }
-        if (!code.equalsIgnoreCase(inputCode)) {
+        if (!inputCode.equalsIgnoreCase(code)) {//inputCode不能为空
             throw new ValidateCodeException("验证码输入错误");
         }
     }

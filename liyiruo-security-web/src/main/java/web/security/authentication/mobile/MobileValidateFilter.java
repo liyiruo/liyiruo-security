@@ -44,7 +44,9 @@ public class MobileValidateFilter extends OncePerRequestFilter {
                 return;
             }
         }
-        //非手机验证码登录，则直接放行
+        //1。非手机验证码登录，则直接放行
+        //2。手机验证通过后放行
+        //3。手机验证不通过时，不走这行代码
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 

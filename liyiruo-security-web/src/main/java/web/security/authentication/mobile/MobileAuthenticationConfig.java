@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.stereotype.Component;
 import web.security.config.authentication.CustomAuthenticationFailureHandler;
 import web.security.config.authentication.CustomAuthenticationSuccessHandler;
@@ -32,6 +33,8 @@ public class MobileAuthenticationConfig
     public void configure(HttpSecurity http) throws Exception {
         //创建手机号过滤器实例
         MobileAuthenticationFilter mobileAuthenticationFilter = new MobileAuthenticationFilter();
+        //设置sesionn管理器 指定这个session管理器 seesion管理依据用户名密码，这样不管是手机号登录还是用户名登录 都同时会被管理
+        mobileAuthenticationFilter.setSessionAuthenticationStrategy(http.getSharedObject(SessionAuthenticationStrategy.class));
         // 接收 AuthenticationManager 认证管理器
         mobileAuthenticationFilter.setAuthenticationManager(http.getSharedObject(AuthenticationManager.class));
         //增加记住我功能

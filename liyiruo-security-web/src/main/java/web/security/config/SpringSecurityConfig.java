@@ -153,7 +153,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .invalidSessionStrategy(invalidSessionStrategy)
                 .maximumSessions(1)
-                .expiredSessionStrategy(sessionInformationExpiredStrategy)
+                .expiredSessionStrategy(sessionInformationExpiredStrategy) //超过最大值时 怎么做
+                //增加下面这行，则按这行处理
+                .maxSessionsPreventsLogin(true) //如果登录达到上线了，不允许再登录
         ;
 
         // 将手机相关的配置绑定过滤器链上

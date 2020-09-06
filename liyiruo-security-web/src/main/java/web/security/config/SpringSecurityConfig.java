@@ -16,6 +16,8 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import web.security.authentication.code.ImageCodeValidateFilter;
 import web.security.authentication.mobile.MobileAuthenticationConfig;
 import web.security.authentication.mobile.MobileValidateFilter;
@@ -27,6 +29,11 @@ import javax.sql.DataSource;
 @Configuration
 @Slf4j
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+    @Autowired
+    SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+    //    注入session失败策略
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
     @Autowired
     MobileValidateFilter mobileValidateFilter;
     @Autowired
@@ -141,6 +148,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .rememberMe()
                 .tokenRepository(jdbcTokenRepository())
                 .tokenValiditySeconds(securityProperties.getAuthention().getTokenValiditySeconds())
+                //session 失效后的策略
+                .and()
+                .sessionManagement()
+                .invalidSessionStrategy(invalidSessionStrategy)
+                .maximumSessions(1)
+                .expiredSessionStrategy(sessionInformationExpiredStrategy)
         ;
 
         // 将手机相关的配置绑定过滤器链上

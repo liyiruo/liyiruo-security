@@ -63,7 +63,5 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
             log.info("请求为REDIRECT==>{}", JSON.toJSONString(authentication));
             super.onAuthenticationSuccess(request, response, authentication);
         }
-
-
     }
 }

@@ -57,7 +57,12 @@ public class CustomAuthenticationFailureHandler extends SimpleUrlAuthenticationF
             //会回到密码登录页面；增加这段代码 手机认证失败则回到手机认证页面
             String refer = request.getHeader("Referer");
             log.info("refer==>{}", refer);
-            String lastUrl = StringUtils.substringBefore(refer, "?");
+
+            //加一段代码，先看是不是session打到最大值了
+            Object flag = request.getAttribute("toAuthentication");
+            //flag 是否为空，如果为空走以前的路子，如果不为空 则跳转到登录页面
+            String lastUrl = flag==null ? StringUtils.substringBefore(refer, "?") : properties.getAuthention().getLoginPage();
+//            String lastUrl = StringUtils.substringBefore(refer, "?");
             super.setDefaultFailureUrl(lastUrl.concat("?error"));
             super.onAuthenticationFailure(request, response, exception);
         }

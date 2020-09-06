@@ -3,6 +3,8 @@ server:
   servlet:
     session:
       timeout: 1m  #设置session过期时间为1分钟
+      cookie:
+        name: JSESSIONID
 spring:
   thymeleaf:
     cache: false
@@ -11,12 +13,17 @@ spring:
     username: root
     password: '!QAZ2wsx'
     driver-class-name: com.mysql.cj.jdbc.Driver
+  session:
+    store-type: redis   #配置session存储位置
+  #配置rides数据库
+  redis:
+    host: localhost
+    port: 6379
 #  security:
 #    user:
 #      name: admin
 #      password: 123
 #      roles: admin
-
 
 
 liyiruo:

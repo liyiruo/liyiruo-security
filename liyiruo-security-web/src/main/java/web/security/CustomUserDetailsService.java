@@ -34,7 +34,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         String password = passwordEncoder.encode("1234");
         //查询用户权限
         //3.封装用户信息
-        UserDetails userDetails = new User("liyishi", password, AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN"));
+        UserDetails userDetails = new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN"));
         log.info("userDetails.toString()==>{}",userDetails.toString());
         return userDetails;
     }

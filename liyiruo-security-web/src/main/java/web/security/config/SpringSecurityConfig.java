@@ -115,7 +115,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         //httpBasic 浏览器弹出一个认证框的方式认证
         //http.httpBasic()
         //formLogin 表单认证
-        http.addFilterBefore(mobileValidateFilter,UsernamePasswordAuthenticationFilter.class)
+        http.addFilterBefore(mobileValidateFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(imageCodeValidateFilter, UsernamePasswordAuthenticationFilter.class)
                 .formLogin()
                 .loginPage(securityProperties.getAuthention().getLoginPage())//指定登录页面 URL 需要在controller里
@@ -128,7 +128,10 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()//认证请求
-                .antMatchers(securityProperties.getAuthention().getLoginPage(), "/code/image","/mobile/page","/code/mobile")
+                .antMatchers(securityProperties.getAuthention().getLoginPage(),
+                        securityProperties.getAuthention().getImageCodeUrl(),
+                        securityProperties.getAuthention().getMobilePage(),
+                        securityProperties.getAuthention().getMobileCodeUrl())
                 .permitAll()
                 .anyRequest()
                 .authenticated()//所有进入应用的http请求都要进行认证
@@ -137,7 +140,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 //增加记住我功能
                 .rememberMe()
                 .tokenRepository(jdbcTokenRepository())
-                .tokenValiditySeconds(7 * 24 * 60 * 60)
+                .tokenValiditySeconds(securityProperties.getAuthention().getTokenValiditySeconds())
         ;
 
         // 将手机相关的配置绑定过滤器链上

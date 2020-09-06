@@ -25,6 +25,10 @@ liyiruo:
       loginProcessingUrl: /login/form #登录表单提交URL
       usernameParameter: name #登录表单的用户名属性
       passwordParameter: pwd #登录表单的用户名属性
+      imageCodeUrl: /code/image
+      mobileCodeUrl: /code/mobile
+      mobilePage: /mobile/page
+      tokenValiditySeconds: 604800
       staticPaths:
         - /dist/**
         - /modules/**

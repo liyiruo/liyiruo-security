@@ -46,7 +46,6 @@ public class ImageCodeValidateFilter extends OncePerRequestFilter {
         }
         //放行请求
         filterChain.doFilter(request, response);
-
     }
 
     private void validate(HttpServletRequest request) throws AuthenticationException {

@@ -36,7 +36,7 @@ public class MobileAuthenticationProvider implements AuthenticationProvider {
             throw new AuthenticationServiceException("手机号未注册");
         }
         //如果查询到信息 就重新构建MobileAuthenticationToken实例 -用户信息 -用户权限
-        MobileAuthenticationToken authenticationToken = new MobileAuthenticationToken(mobile, user.getAuthorities());
+        MobileAuthenticationToken authenticationToken = new MobileAuthenticationToken(user, user.getAuthorities());
         authenticationToken.setDetails(user);
         return authenticationToken;
     }

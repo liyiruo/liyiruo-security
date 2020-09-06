@@ -1,8 +1,10 @@
 package web.security.config.properties;
 
+import lombok.Data;
 import org.springframework.stereotype.Component;
 
 @Component
+@Data
 public class AuthenticationProperties {
     // application.yml 没配置取默认值
     private String loginPage = "/login/page";
@@ -11,52 +13,8 @@ public class AuthenticationProperties {
     private String passwordParameter = "pwd";
     private String[] staticPaths = {"/dist/**", "/modules/**", "/plugins/**"};
     private LoginResponseType loginType = LoginResponseType.REDIRECT;
-
-    public LoginResponseType getLoginType() {
-        return loginType;
-    }
-
-    public void setLoginType(LoginResponseType loginType) {
-        this.loginType = loginType;
-    }
-
-    public String getLoginPage() {
-        return loginPage;
-    }
-
-    public void setLoginPage(String loginPage) {
-        this.loginPage = loginPage;
-    }
-
-    public String getLoginProcessingUrl() {
-        return loginProcessingUrl;
-    }
-
-    public void setLoginProcessingUrl(String loginProcessingUrl) {
-        this.loginProcessingUrl = loginProcessingUrl;
-    }
-
-    public String getUsernameParameter() {
-        return usernameParameter;
-    }
-
-    public void setUsernameParameter(String usernameParameter) {
-        this.usernameParameter = usernameParameter;
-    }
-
-    public String getPasswordParameter() {
-        return passwordParameter;
-    }
-
-    public void setPasswordParameter(String passwordParameter) {
-        this.passwordParameter = passwordParameter;
-    }
-
-    public String[] getStaticPaths() {
-        return staticPaths;
-    }
-
-    public void setStaticPaths(String[] staticPaths) {
-        this.staticPaths = staticPaths;
-    }
+    private String imageCodeUrl = "/code/image";
+    private String mobileCodeUrl = "/code/mobile";
+    private String mobilePage = "/mobile/page";
+    private Integer tokenValiditySeconds = 60*60*24*7;
 }

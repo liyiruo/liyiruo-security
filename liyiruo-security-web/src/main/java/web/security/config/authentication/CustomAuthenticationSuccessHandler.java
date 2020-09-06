@@ -60,7 +60,7 @@ public class CustomAuthenticationSuccessHandler extends SavedRequestAwareAuthent
 
         if (LoginResponseType.REDIRECT.equals(properties.getAuthention().getLoginType())) {
             //重定向到上次请求的地址上，引发跳转到认证页面的地址
-            log.info("==>{}", JSON.toJSONString(authentication));
+            log.info("请求为REDIRECT==>{}", JSON.toJSONString(authentication));
             super.onAuthenticationSuccess(request, response, authentication);
         }
 

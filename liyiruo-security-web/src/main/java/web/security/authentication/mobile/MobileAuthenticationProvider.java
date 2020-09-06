@@ -1,5 +1,6 @@
 package web.security.authentication.mobile;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
  * 提供给底层 ProviderManager 使用
  * @author liyiruo
  */
+@Slf4j
 public class MobileAuthenticationProvider implements AuthenticationProvider {
 
     UserDetailsService userDetailsService;
@@ -28,6 +30,7 @@ public class MobileAuthenticationProvider implements AuthenticationProvider {
         String mobile = (String) mobileAuthenticationToken.getPrincipal();
         //根据手机号查询用户信息
         UserDetails user = userDetailsService.loadUserByUsername(mobile);
+        log.info("根据手机号查询到的用户：{}", user);
         //如果没有查到，抛出异常
         if (user == null) {
             throw new AuthenticationServiceException("手机号未注册");

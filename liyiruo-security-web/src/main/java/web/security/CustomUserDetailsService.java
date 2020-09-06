@@ -33,6 +33,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         // 如果有此用户信息, 假设数据库查询到的用户密码是 1234
         String password = passwordEncoder.encode("1234");
         //查询用户权限
+        //下面的信息应该是从数据库查出来的 todo
         //3.封装用户信息
         UserDetails userDetails = new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN"));
         log.info("userDetails.toString()==>{}",userDetails.toString());

@@ -19,7 +19,7 @@ public class MobileUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String mobile) throws UsernameNotFoundException {
         log.info("页面传来的手机号是{}", mobile);
-        // 1. 通过手机号查询用户信息
+        // 1. 通过手机号查询用户信息 应该根据手机号查询出用户的信息 todo
         String name = "zhangsan";
         // 2. 如果有此用户，则查询用户权限
         //这里封装用户信息的时候 应该封装的是用户 而不是手机号

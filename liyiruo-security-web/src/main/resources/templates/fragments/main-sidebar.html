@@ -14,7 +14,8 @@
         <!-- 左侧头像与名字 Sidebar user (optional)-->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img th:src="@{/dist/img/user2-160x160.jpg}" src="../dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                <img th:src="@{/dist/img/user2-160x160.jpg}" src="../dist/img/user2-160x160.jpg"
+                     class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
                 <a href="#" th:text="${username}" class="d-block">梦老师66</a>
@@ -46,19 +47,22 @@
                     </a>
                     <ul class="nav nav-treeview">
                         <li class="nav-item">
-                            <a th:href="@{/user}" href="system/user/user-list.html" class="nav-link ">
+                            <a th:href="@{/user}" href="system/user/user-list.html" class="nav-link "
+                               th:class="${#strings.equals(activeUrl, '/user') ? 'nav-link active': 'nav-link'}">
                                 <i class="fa fa-users"></i>
                                 <p>用户管理</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a th:href="@{/role}" class="nav-link"
+                               th:class="${#strings.equals(activeUrl, '/role') ? 'nav-link active': 'nav-link'}">
                                 <i class="fa fa-user-secret"></i>
                                 <p>角色管理</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a th:href="@{/permission}" class="nav-link"
+                               th:class="${#strings.equals(activeUrl, '/role') ? 'nav-link active': 'nav-link'}">
                                 <i class="fa fa-cog"></i>
                                 <p>菜单管理</p>
                             </a>

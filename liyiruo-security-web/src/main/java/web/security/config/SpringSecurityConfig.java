@@ -9,18 +9,22 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import web.security.authentication.code.ImageCodeValidateFilter;
 import web.security.authentication.mobile.MobileAuthenticationConfig;
 import web.security.authentication.mobile.MobileValidateFilter;
+import web.security.authentication.session.CustomLogoutHandler;
 import web.security.config.properties.SecurityProperties;
 
 import javax.sql.DataSource;
@@ -30,8 +34,10 @@ import javax.sql.DataSource;
 @Slf4j
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
+    private LogoutHandler customLogoutHandler;
+    @Autowired
     SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
-    //    注入session失败策略
+    //注入session失败策略
     @Autowired
     private InvalidSessionStrategy invalidSessionStrategy;
     @Autowired
@@ -71,6 +77,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
     }
 
     /**
@@ -142,7 +153,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .anyRequest()
                 .authenticated()//所有进入应用的http请求都要进行认证
-                .and().csrf().disable() //关闭 CSRF 攻击
+                .and()
 
                 //增加记住我功能
                 .rememberMe()
@@ -156,10 +167,19 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .expiredSessionStrategy(sessionInformationExpiredStrategy) //超过最大值时 怎么做
                 //增加下面这行，则按这行处理
                 .maxSessionsPreventsLogin(true) //如果登录达到上线了，不允许再登录
+                .sessionRegistry(sessionRegistry())
+                .and().and()
+                .logout().addLogoutHandler(customLogoutHandler)//退出清除缓存
+                .logoutUrl("/user/logout")//退出系统的URL
+                .logoutSuccessUrl(securityProperties.getAuthention().getMobilePage())
+                .deleteCookies("JSESSIONID")
         ;
 
         // 将手机相关的配置绑定过滤器链上
         http.apply(mobileAuthenticationConfig);
+        //关闭 CSRF 攻击
+        http.csrf().disable();
+
     }
 
 

@@ -1,8 +1,10 @@
 package web.security.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import web.security.authentication.mobile.SmsCodeSender;
@@ -12,6 +14,9 @@ import web.security.authentication.session.CustomSessionInformationExpiredStrate
 
 @Configuration
 public class SeurityConfigBean {
+    @Autowired
+    private SessionRegistry sessionRegistry;
+
     //如果容器中没有短信服务提供接口，使用这个默认接口
     @Bean
     @ConditionalOnMissingBean(SmsSend.class)
@@ -22,7 +27,7 @@ public class SeurityConfigBean {
     @Bean
     @ConditionalOnMissingBean(InvalidSessionStrategy.class)
     public InvalidSessionStrategy invalidSessionStrategy() {
-        return new CustomInvalidSessionStrategy();
+        return new CustomInvalidSessionStrategy(sessionRegistry);
     }
 
     @Bean

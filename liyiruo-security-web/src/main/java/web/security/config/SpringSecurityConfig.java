@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -151,6 +152,15 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         securityProperties.getAuthention().getMobilePage(),
                         securityProperties.getAuthention().getMobileCodeUrl())
                 .permitAll()
+
+                // 有 sys:user 权限的可以访问任意请求方式的/role
+                .antMatchers("/user").hasAuthority("sys:user")
+                // 有 sys:role 权限的可以访问 get方式的/role
+                .antMatchers(HttpMethod.GET, "/role").hasAuthority("sys:role")
+                .antMatchers(HttpMethod.GET, "/permission")
+                // ADMIN 注意角色会在前面加上前缀 ROLE_ , 也就是完整的是 ROLE_ADMIN, ROLE_ROOT
+                .access("hasAuthority('sys:premission') or hasAnyRole('ADMIN', 'ROOT')")
+
                 .anyRequest()
                 .authenticated()//所有进入应用的http请求都要进行认证
                 .and()
@@ -173,6 +183,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutUrl("/user/logout")//退出系统的URL
                 .logoutSuccessUrl(securityProperties.getAuthention().getMobilePage())
                 .deleteCookies("JSESSIONID")
+
         ;
 
         // 将手机相关的配置绑定过滤器链上

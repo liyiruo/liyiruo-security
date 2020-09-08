@@ -1,6 +1,5 @@
 package web.security;
 
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -33,9 +32,11 @@ public class CustomUserDetailsService implements UserDetailsService {
         // 如果有此用户信息, 假设数据库查询到的用户密码是 1234
         String password = passwordEncoder.encode("1234");
         //查询用户权限
+        String authorityString = "sys:user,sys:role,ROLE_ADMIN";
         //下面的信息应该是从数据库查出来的 todo
         //3.封装用户信息
-        UserDetails userDetails = new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN"));
+//        UserDetails userDetails = new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList("ADMIN"));
+        UserDetails userDetails = new User(username, password, AuthorityUtils.commaSeparatedStringToAuthorityList(authorityString));
         log.info("userDetails.toString()==>{}",userDetails.toString());
         return userDetails;
     }
